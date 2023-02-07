@@ -1,0 +1,14 @@
+1) want to clear the data when go to IT curriculum
+2) delete is fucked up fix that shit
+3) gpa/credit for each sem(maybe add two more 
+   parameter in selectedData which is gpa and credit
+   then use tableData to calculate Gpa maybe)
+4) Formatting so fked up
+
+
+GOT IT
+1) try components
+2) want to have delete when click on delete icon
+4) no repeated subject should be selected
+3) semester
+

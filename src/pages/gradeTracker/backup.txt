@@ -1,0 +1,345 @@
+import * as React from "react"
+import "bootstrap/dist/css/bootstrap.min.css"
+import {
+  Container,
+  ButtonGroup,
+  Dropdown,
+  DropdownButton,
+  Badge,
+  Button,
+  Row,
+  Col,
+  Modal,
+  Form,
+  Nav,
+  Navbar,
+  NavDropdown,
+  Table,
+} from "react-bootstrap"
+import { useLocalStorage } from "react-use"
+import "./index.css"
+//import data from "../../pages/cs-2019.json"
+
+function Main() {
+  const [curriculum, setCurriculum] = React.useState([])
+  let [selectedMajor, setSelectedMajor] = React.useState("CS")
+  let [selectedGroup, setSelectedGroup] = React.useState({})
+  let [selectedSubject, setSelectedSubject] = React.useState({})
+
+  const grades = ["A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F", "W"]
+
+  let [grade, setGrade] = React.useState([])
+  const [totalGpa, setTotalGpa] = useLocalStorage("totalGPA", 0.0)
+  let [Credit, setCredit] = React.useState(0)
+  let [selectedData, setSelectedData] = useLocalStorage("data", [])
+  let [badge, setbadge] = React.useState(0.0)
+  let [totalCredit, settotalCredit] = React.useState(0)
+  //let [test, setTest] = useLocalStorage("selectedData")
+
+  React.useEffect(() => {
+    const res = async () => {
+      const data = await import(`./${selectedMajor.toLowerCase()}-2019.json`)
+      setCurriculum(data.curriculum)
+    }
+
+    res()
+  }, [selectedMajor])
+
+  React.useEffect(() => {
+    if (curriculum.courses) {
+      setSelectedGroup(curriculum.courses[0])
+    }
+  }, [curriculum])
+
+  React.useEffect(() => {
+    setbadge(totalGpa)
+  }, [totalGpa])
+
+  function handleAdd(group, code, subject, credit, grade) {
+    selectedData.push([group, code, subject, credit, grade])
+    console.table(selectedData)
+    //setTest([...selectedData])
+    setSelectedData([...selectedData])
+    calculateGPA()
+  }
+
+  // console.log(curriculum)
+  //console.log("final", selectedData)
+
+  function calculateGPA() {
+    let getData = JSON.parse(localStorage.getItem("data"))
+    let totalPoints = 0
+    let totalCredits = 0
+    for (let i = 0; i < getData.length; i++) {
+      let grade = getData[i][4]
+      let credits = getData[i][3]
+      if (grade === "W") {
+        continue
+      }
+      switch (grade) {
+        case "A":
+          totalPoints += 4 * credits
+          totalCredits += credits
+          break
+        case "A-":
+          totalPoints += 3.75 * credits
+          totalCredits += credits
+          break
+        case "B+":
+          totalPoints += 3.25 * credits
+          totalCredits += credits
+          break
+        case "B":
+          totalPoints += 3 * credits
+          totalCredits += credits
+          break
+        case "B-":
+          totalPoints += 2.75 * credits
+          totalCredits += credits
+          break
+        case "C+":
+          totalPoints += 2.25 * credits
+          totalCredits += credits
+          break
+        case "C":
+          totalPoints += 2 * credits
+          totalCredits += credits
+          break
+        case "C-":
+          totalPoints += 1.75 * credits
+          totalCredits += credits
+          break
+        case "D":
+          totalPoints += 1 * credits
+          totalCredits += credits
+          break
+        case "F":
+          totalPoints += 0 * credits
+          totalCredits += credits
+          break
+      }
+    }
+    let gpa = (totalPoints / totalCredits).toFixed(2)
+    setTotalGpa(gpa)
+    settotalCredit(totalCredits)
+    //let badge = document.getElementById("gpa-badge")
+    //badge.innerHTML = totalGpa
+  }
+
+  // let badge = document.getElementById("gpa-badge")
+  // if (badge) {
+  //   badge.innerHTML = totalGpa
+  // }
+
+  // console.log(curriculum, selectedGroup, selectedSubject)
+
+  function clearData() {
+    localStorage.removeItem("data")
+    localStorage.removeItem("totalGPA")
+  }
+
+  return (
+    <>
+      <div>
+        <Navbar bg="dark" variant="dark">
+          <Container>
+            <Navbar.Brand href="#home">Grade Tracker</Navbar.Brand>
+            <Nav className="me-auto">
+              <Nav.Link href="#home">Home</Nav.Link>
+              <NavDropdown title="Curriculum" id="basic-nav-dropdown">
+                <NavDropdown.Item
+                  href="#home"
+                  onClick={() => {
+                    setSelectedMajor("cs")
+                  }}
+                >
+                  CS
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="#home"
+                  onClick={() => {
+                    setSelectedMajor("it")
+                  }}
+                >
+                  IT
+                </NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+          </Container>
+        </Navbar>
+      </div>
+      <br></br>
+
+      <div>
+        <Container>
+          <Button variant="outline-danger" onClick={clearData}>
+            Clear Data
+          </Button>{" "}
+          <Button variant="dark" className="float-right">
+            Accumulated GPA{" "}
+            <Badge id="gpa-badge" bg="secondary">
+              {badge}
+            </Badge>
+          </Button>
+          <Button variant="dark" className="float-right">
+            Total Credits{" "}
+            <Badge id="credit-badge" bg="secondary">
+              {totalCredit}
+            </Badge>
+          </Button>
+        </Container>
+      </div>
+      <br></br>
+      <div>
+        <Container>
+          <Row>
+            <Col sm={11}>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>
+                      <Dropdown className="dropdown-width">
+                        <Dropdown.Toggle
+                          variant="secondary"
+                          id="dropdown-basic"
+                        >
+                          Select Subject Group
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          {curriculum && curriculum.courses
+                            ? curriculum.courses.map(group => (
+                                <Dropdown.Item
+                                  key={group.groupName}
+                                  onClick={() => setSelectedGroup(group)}
+                                >
+                                  {group.groupName}
+                                </Dropdown.Item>
+                              ))
+                            : null}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </th>
+                    <th>
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          variant="secondary"
+                          id="dropdown-basic"
+                        >
+                          Select Subject Name
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          {selectedGroup && selectedGroup.subjects
+                            ? selectedGroup.subjects.map(subject => (
+                                <Dropdown.Item
+                                  key={subject.code}
+                                  onClick={() => setSelectedSubject(subject)}
+                                >
+                                  {subject.name}
+                                </Dropdown.Item>
+                              ))
+                            : null}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </th>
+                    <th>
+                      {" "}
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          variant="secondary"
+                          id="dropdown-basic"
+                        >
+                          Select Credit
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          {[1, 2, 3].map(credit => (
+                            <Dropdown.Item
+                              key={credit}
+                              onClick={() => setCredit(credit)}
+                            >
+                              {credit}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </th>
+                    <th>
+                      {" "}
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          variant="secondary"
+                          id="dropdown-basic"
+                        >
+                          Select Grade
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          {grades.map(gradeOption => (
+                            <Dropdown.Item
+                              key={gradeOption}
+                              onClick={() => setGrade(gradeOption)}
+                            >
+                              {gradeOption}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </th>
+                  </tr>
+                </thead>
+              </Table>
+            </Col>
+            <Col sm={1}>
+              <th>
+                <Button
+                  variant="secondary"
+                  onClick={() =>
+                    handleAdd(
+                      selectedGroup.groupName,
+                      selectedSubject.code,
+                      selectedSubject.name,
+                      Credit,
+                      grade
+                    )
+                  }
+                  className="addData"
+                >
+                  Add
+                </Button>
+              </th>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+
+      <br></br>
+      <div>
+        <Container>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Subject Group</th>
+                <th>Subject Code</th>
+                <th>Subject Name</th>
+                <th>Credit</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedData.map((data, index) => (
+                <tr key={index}>
+                  <td>{data[0]}</td>
+                  <td>{data[1]}</td>
+                  <td>{data[2]}</td>
+                  <td>{data[3]}</td>
+                  <td>{data[4]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Container>
+      </div>
+    </>
+  )
+}
+
+export default Main
+//With Dropdown

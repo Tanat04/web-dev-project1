@@ -1,0 +1,352 @@
+import * as React from "react"
+import "bootstrap/dist/css/bootstrap.min.css"
+import {
+  Container,
+  ButtonGroup,
+  Dropdown,
+  DropdownButton,
+  Badge,
+  Button,
+  Row,
+  Col,
+  Modal,
+  Form,
+  Nav,
+  Navbar,
+  NavDropdown,
+  Table,
+} from "react-bootstrap"
+import { useLocalStorage } from "react-use"
+import "./index.css"
+//import data from "../../pages/cs-2019.json"
+
+function Main() {
+  const [curriculum, setCurriculum] = React.useState([])
+  let [selectedMajor, setSelectedMajor] = React.useState("CS")
+  let [selectedGroup, setSelectedGroup] = React.useState({})
+  let [selectedSubject, setSelectedSubject] = React.useState({})
+
+  const grades = ["A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F", "W"]
+
+  let [grade, setGrade] = React.useState([])
+  const [totalGpa, setTotalGpa] = useLocalStorage("totalGPA", 0.0)
+  let [Credit, setCredit] = React.useState(0) //Doesn't use this anymore because credit is added to json.
+  let [selectedData, setSelectedData] = useLocalStorage("data", [])
+  let [badge, setbadge] = React.useState(0.0)
+  let [totalCredit, settotalCredit] = useLocalStorage("totalCredit", 0)
+  //let [test, setTest] = useLocalStorage("selectedData")
+
+  React.useEffect(() => {
+    const res = async () => {
+      const data = await import(`./${selectedMajor.toLowerCase()}-2019.json`)
+      setCurriculum(data.curriculum)
+    }
+
+    res()
+    const previousValue = selectedMajor
+    console.log(previousValue, selectedMajor)
+    // if (previousValue !== selectedMajor) {// This doesn't work coz previous value change as soon as setselecteMajor coz it rerender..
+    //   setTotalGpa(0.0)
+    //   setSelectedData([])
+    //   settotalCredit(0)
+    // }
+    // localStorage.removeItem("data") //This one remove data from localStorage after reload and if reload again everything gone
+    // localStorage.removeItem("totalGPA")
+    // localStorage.removeItem("totalCredit")
+
+    // setTotalGpa(0.0) //This one setvalue to 0 after every reload
+    // setSelectedData([])
+    // settotalCredit(0)
+    // console.log("am here")
+  }, [selectedMajor])
+
+  React.useEffect(() => {
+    if (curriculum.courses) {
+      setSelectedGroup(curriculum.courses[0])
+      setGrade(grades[0])
+    }
+  }, [curriculum])
+
+  React.useEffect(() => {
+    if (selectedGroup.subjects) {
+      setSelectedSubject(selectedGroup.subjects[0])
+    }
+  }, [selectedGroup])
+
+  React.useEffect(() => {
+    setbadge(totalGpa)
+  }, [totalGpa])
+
+  function handleAdd(group, code, subject, credit, grade) {
+    selectedData.push([group, code, subject, credit, grade])
+    console.table(selectedData)
+    //setTest([...selectedData])
+    setSelectedData([...selectedData])
+    calculateGPA()
+  }
+
+  // console.log(curriculum)
+  //console.log("final", selectedData)
+
+  function calculateGPA() {
+    let getData = JSON.parse(localStorage.getItem("data"))
+    let totalPoints = 0
+    let totalCredits = 0
+    for (let i = 0; i < getData.length; i++) {
+      let grade = getData[i][4]
+      let credits = getData[i][3]
+      if (grade === "W") {
+        continue
+      }
+      switch (grade) {
+        case "A":
+          totalPoints += 4 * credits
+          totalCredits += credits
+          break
+        case "A-":
+          totalPoints += 3.75 * credits
+          totalCredits += credits
+          break
+        case "B+":
+          totalPoints += 3.25 * credits
+          totalCredits += credits
+          break
+        case "B":
+          totalPoints += 3 * credits
+          totalCredits += credits
+          break
+        case "B-":
+          totalPoints += 2.75 * credits
+          totalCredits += credits
+          break
+        case "C+":
+          totalPoints += 2.25 * credits
+          totalCredits += credits
+          break
+        case "C":
+          totalPoints += 2 * credits
+          totalCredits += credits
+          break
+        case "C-":
+          totalPoints += 1.75 * credits
+          totalCredits += credits
+          break
+        case "D":
+          totalPoints += 1 * credits
+          totalCredits += credits
+          break
+        case "F":
+          totalPoints += 0 * credits
+          totalCredits += credits
+          break
+      }
+    }
+    let gpa = (totalPoints / totalCredits).toFixed(2)
+    setTotalGpa(gpa)
+    settotalCredit(totalCredits)
+    //let badge = document.getElementById("gpa-badge")
+    //badge.innerHTML = totalGpa
+  }
+
+  // let badge = document.getElementById("gpa-badge")
+  // if (badge) {
+  //   badge.innerHTML = totalGpa
+  // }
+
+  console.log(selectedGroup)
+  console.log(selectedSubject)
+  console.log(grade)
+
+  function clearData() {
+    localStorage.removeItem("data")
+    localStorage.removeItem("totalGPA")
+    localStorage.removeItem("totalCredit")
+    window.location.reload(false)
+  }
+
+  return (
+    <>
+      <div>
+        <Navbar bg="dark" variant="dark">
+          <Container>
+            <Navbar.Brand href="#home">Grade Tracker</Navbar.Brand>
+            <Nav className="me-auto">
+              <Nav.Link href="#home">Home</Nav.Link>
+              <NavDropdown title="Curriculum" id="basic-nav-dropdown">
+                <NavDropdown.Item
+                  href="#home"
+                  onClick={() => {
+                    setSelectedMajor("cs")
+                  }}
+                >
+                  CS
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="#home"
+                  onClick={() => {
+                    setSelectedMajor("it")
+                  }}
+                >
+                  IT
+                </NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+          </Container>
+        </Navbar>
+      </div>
+      <br></br>
+
+      <div>
+        <Container>
+          <Button
+            variant="outline-danger"
+            style={{ marginLeft: "2.4em" }}
+            onClick={clearData}
+          >
+            Clear Data
+          </Button>{" "}
+          <Button variant="dark" className="float-right">
+            Accumulated GPA{" "}
+            <Badge id="gpa-badge" bg="secondary">
+              {badge}
+            </Badge>
+          </Button>
+          <Button variant="dark" className="float-right">
+            Total Credits{" "}
+            <Badge id="credit-badge" bg="secondary">
+              {totalCredit}
+            </Badge>
+          </Button>
+        </Container>
+      </div>
+      <br></br>
+      <div>
+        <Container>
+          <Row>
+            <Col sm={11}>
+              <Table striped bordered hover className="HeaderRow">
+                <thead>
+                  <tr>
+                    <th>
+                      <div>
+                        <Form.Select
+                          aria-label="Default select example"
+                          value={selectedGroup.groupName}
+                          onChange={e =>
+                            setSelectedGroup(
+                              curriculum.courses.find(
+                                group => group.groupName === e.target.value
+                              )
+                            )
+                          }
+                        >
+                          {curriculum && curriculum.courses
+                            ? curriculum.courses.map(group => (
+                                <option
+                                  key={group.groupName}
+                                  value={group.groupName}
+                                >
+                                  {group.groupName}
+                                </option>
+                              ))
+                            : null}
+                        </Form.Select>
+                      </div>
+                    </th>
+                    <th>
+                      <div>
+                        <Form.Select
+                          aria-label="Default select example"
+                          value={selectedSubject.name}
+                          onChange={e =>
+                            setSelectedSubject(
+                              selectedGroup.subjects.find(
+                                subject => subject.name === e.target.value
+                              )
+                            )
+                          }
+                        >
+                          {selectedGroup && selectedGroup.subjects
+                            ? selectedGroup.subjects.map(subject => (
+                                <option key={subject.code} value={subject.name}>
+                                  {subject.name}
+                                </option>
+                              ))
+                            : null}
+                        </Form.Select>
+                      </div>
+                    </th>
+                    <th>
+                      <Form.Select
+                        aria-label="Grade Select"
+                        value={grade}
+                        onChange={e => setGrade(e.target.value)}
+                      >
+                        {grades.map(gradeOption => (
+                          <option key={gradeOption} value={gradeOption}>
+                            {gradeOption}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    </th>
+                  </tr>
+                </thead>
+              </Table>
+            </Col>
+            <Col sm={1}>
+              <th>
+                <Button
+                  variant="secondary"
+                  style={{ width: "5rem" }}
+                  onClick={() =>
+                    handleAdd(
+                      selectedGroup.groupName,
+                      selectedSubject.code,
+                      selectedSubject.name,
+                      selectedSubject.credit,
+                      grade
+                    )
+                  }
+                  className="addData"
+                >
+                  Add
+                </Button>
+              </th>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+
+      <br></br>
+      <div>
+        <Container>
+          <Table striped bordered hover style={{ marginLeft: "2.4em" }}>
+            <thead>
+              <tr>
+                <th>Subject Group</th>
+                <th>Subject Code</th>
+                <th>Subject Name</th>
+                <th>Credit</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedData.map((data, index) => (
+                <tr key={index}>
+                  <td>{data[0]}</td>
+                  <td>{data[1]}</td>
+                  <td>{data[2]}</td>
+                  <td>{data[3]}</td>
+                  <td>{data[4]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Container>
+      </div>
+    </>
+  )
+}
+
+export default Main
+// With select and everything working. before using components
