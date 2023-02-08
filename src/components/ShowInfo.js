@@ -1,12 +1,17 @@
 import * as React from "react"
 import "bootstrap/dist/css/bootstrap.min.css"
-import { Button, Container, Badge } from "react-bootstrap"
+import { Button, Container, Badge, Modal } from "react-bootstrap"
+import LineChart from "./LineChart"
 
 function ShowInfo({ clearData, badge, totalCredit }) {
   return (
     <div>
       <Container>
-        <Button variant="outline-danger" onClick={clearData}>
+        <Button
+          variant="outline-danger"
+          onClick={clearData}
+          style={{ marginRight: "0.6em" }}
+        >
           Clear Data
         </Button>{" "}
         <Button variant="dark" className="float-right">

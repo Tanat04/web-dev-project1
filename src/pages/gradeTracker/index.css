@@ -26,6 +26,8 @@
 	font-size: 0.9em;
 	padding: 0.5em;
 	float: right;
+	font-weight: 400;
+
 }
 
 .semCredit {	
@@ -33,6 +35,7 @@
 	padding: 0.5em;
 	float: right;
 	margin-right: 0.6em;
+	font-weight: 400;
 }
 
 .deleteImg {

@@ -1,6 +1,8 @@
 import React from "react"
 import "bootstrap/dist/css/bootstrap.min.css"
 import { Container, Table, Button, Badge } from "react-bootstrap"
+import remove from "../images/delete.png"
+import LineChart from "./LineChart"
 
 function SelectedList({ selectedData, removeRow }) {
   const tableData = {}
@@ -46,19 +48,48 @@ function SelectedList({ selectedData, removeRow }) {
     return [semGpa, semCredit]
   }
 
+  const [showLineChart, setShowLineChart] = React.useState(false)
+  const labels = []
+  const semGpas = []
+  Object.keys(tableData).forEach(key => {
+    labels.push(key)
+    semGpas.push(semGpaAndCredit(tableData[key])[0])
+  })
+
   return (
     <div>
+      <Container
+        style={{
+          marginBottom: "1.5em",
+        }}
+      >
+        <div className="row">
+          <div className="col-2">
+            <Button
+              variant="dark"
+              onClick={() => setShowLineChart(!showLineChart)}
+            >
+              Show Line Chart
+            </Button>
+          </div>
+          <div className="col-5">
+            {showLineChart && <LineChart labels={labels} semGpas={semGpas} />}
+          </div>
+        </div>
+      </Container>
       {Object.keys(tableData).map(key => (
         <Container key={key}>
-          <h5 className="tableHeader">
-            {`Year: ${key.split("-")[0]} - Semester: ${key.split("-")[1]}`}
-          </h5>
-          <Badge bg="dark" className="semInfo">
-            Credits: {semGpaAndCredit(tableData[key])[1]}
-          </Badge>
-          <Badge bg="dark" className="semInfo">
-            GPA: {semGpaAndCredit(tableData[key])[0]}
-          </Badge>
+          <div className="tableDiv">
+            <h4 className="heading">
+              {`Year: ${key.split("-")[0]} - Semester: ${key.split("-")[1]}`}
+            </h4>
+            <Badge bg="dark" className="semGpa">
+              GPA: {semGpaAndCredit(tableData[key])[0]}
+            </Badge>
+            <Badge bg="dark" className="semCredit">
+              Credits: {semGpaAndCredit(tableData[key])[1]}
+            </Badge>
+          </div>
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -73,17 +104,13 @@ function SelectedList({ selectedData, removeRow }) {
               {tableData[key].map(data => (
                 <tr key={data[3]}>
                   <td>
-                    <Button
-                      variant="outline-danger"
+                    <img
+                      className="deleteImg"
+                      src={remove}
+                      alt="delete"
                       onClick={() => removeRow(data[3])}
-                    >
-                      Delete
-                    </Button>{" "}
-                    {/* <img//MF not working
-                    src={"delete.png"}
-                    alt="delete"
-                    onClick={() => removeRow(index)}
-                  /> */}
+                    />
+                    &nbsp;&nbsp;
                     {data[2]}
                   </td>
                   <td>{data[3]}</td>
