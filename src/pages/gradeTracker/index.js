@@ -33,10 +33,10 @@ function Main() {
   let [selectedData, setSelectedData] = useLocalStorage("data", [])
   let [badge, setbadge] = React.useState(0.0)
   let [totalCredit, settotalCredit] = useLocalStorage("totalCredit", 0)
-  let [year, setYear] = React.useState("2023")
+  let [year, setYear] = React.useState("2020")
   let [sem, setSem] = React.useState("1")
 
-  const years = [2023, 2022, 2021, 2020, 2019, 2018]
+  const years = [2020, 2021, 2022, 2023, 2024]
   const sems = [1, 2]
   const grades = ["A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F", "W"]
 
@@ -47,21 +47,6 @@ function Main() {
     }
 
     res()
-    // const previousValue = selectedMajor// This doesn't work coz previous value change as soon as setselecteMajor coz it rerender..
-    // console.log(previousValue, selectedMajor)
-    // if (previousValue !== selectedMajor) {
-    //   setTotalGpa(0.0)
-    //   setSelectedData([])
-    //   settotalCredit(0)
-    // }
-    // localStorage.removeItem("data") //This one remove data from localStorage after reload and if reload again everything gone
-    // localStorage.removeItem("totalGPA")
-    // localStorage.removeItem("totalCredit")
-
-    // setTotalGpa(0.0) //This one setvalue to 0 after every reload
-    // setSelectedData([])
-    // settotalCredit(0)
-    // console.log("am here")
   }, [selectedMajor])
 
   React.useEffect(() => {

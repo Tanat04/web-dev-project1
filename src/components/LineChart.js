@@ -24,6 +24,7 @@ function LineChart({ sortedLabels, sortedSemGpas }) {
         pointBorderColor: "transparent",
         pointBorderWidth: 4,
         fill: true,
+        cubicInterpolationMode: "monotone",
       },
     ],
   }

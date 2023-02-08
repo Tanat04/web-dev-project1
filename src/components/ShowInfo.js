@@ -1,7 +1,6 @@
 import * as React from "react"
 import "bootstrap/dist/css/bootstrap.min.css"
 import { Button, Container, Badge, Modal } from "react-bootstrap"
-import LineChart from "./LineChart"
 
 function ShowInfo({ clearData, badge, totalCredit }) {
   return (
@@ -14,15 +13,15 @@ function ShowInfo({ clearData, badge, totalCredit }) {
         >
           Clear Data
         </Button>{" "}
-        <Button variant="dark" className="float-right">
+        <Button variant="secondary" className="float-right" size="lg">
           Accumulated GPA{" "}
-          <Badge id="gpa-badge" bg="secondary">
+          <Badge id="gpa-badge" bg="dark">
             {badge}
           </Badge>
         </Button>
-        <Button variant="dark" className="float-right">
+        <Button variant="secondary" className="float-right" size="lg">
           Total Credits{" "}
-          <Badge id="credit-badge" bg="secondary">
+          <Badge id="credit-badge" bg="dark">
             {totalCredit}
           </Badge>
         </Button>

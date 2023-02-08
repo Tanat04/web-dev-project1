@@ -71,7 +71,7 @@ function SelectedList({ selectedData, removeRow }) {
           marginBottom: "1.5em",
         }}
       >
-        <Button variant="dark" onClick={handleShow}>
+        <Button variant="secondary" onClick={handleShow}>
           Show Line Chart
         </Button>
         <Modal
@@ -82,7 +82,7 @@ function SelectedList({ selectedData, removeRow }) {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>Semester GPA Line Graph</Modal.Title>
+            <Modal.Title>Semester GPA Line Chart</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <LineChart
@@ -103,17 +103,16 @@ function SelectedList({ selectedData, removeRow }) {
             <h4 className="heading">
               {`Year: ${key.split("-")[0]} - Semester: ${key.split("-")[1]}`}
             </h4>
-            <Badge bg="dark" className="semGpa">
+            <Badge bg="secondary" className="semGpa">
               GPA: {semGpaAndCredit(tableData[key])[0]}
             </Badge>
-            <Badge bg="dark" className="semCredit">
+            <Badge bg="secondary" className="semCredit">
               Credits: {semGpaAndCredit(tableData[key])[1]}
             </Badge>
           </div>
-          <Table striped bordered hover>
+          <Table striped>
             <thead>
               <tr>
-                <th>Subject Group</th>
                 <th>Subject Code</th>
                 <th>Subject Name</th>
                 <th>Credit</th>
@@ -131,9 +130,8 @@ function SelectedList({ selectedData, removeRow }) {
                       onClick={() => removeRow(data[3])}
                     />
                     &nbsp;&nbsp;
-                    {data[2]}
+                    {data[3]}
                   </td>
-                  <td>{data[3]}</td>
                   <td>{data[4]}</td>
                   <td>{data[5]}</td>
                   <td>{data[6]}</td>
