@@ -113,10 +113,10 @@ function SelectedList({ selectedData, removeRow }) {
           <Table striped>
             <thead>
               <tr>
-                <th>Subject Code</th>
-                <th>Subject Name</th>
-                <th>Credit</th>
-                <th>Grade</th>
+                <th style={{ width: "25%" }}>Subject Code</th>
+                <th style={{ width: "40%" }}>Subject Name</th>
+                <th style={{ width: "18%" }}>Credit</th>
+                <th style={{ width: "25%" }}>Grade</th>
               </tr>
             </thead>
             <tbody>

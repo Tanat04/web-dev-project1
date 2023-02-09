@@ -68,6 +68,7 @@ function Main() {
 
   function handleAdd(year, sem, group, code, subject, credit, grade) {
     let subjectExists = selectedData.some(data => data[4] === subject)
+
     if (subjectExists) {
       alert(
         `Subject "${subject}" already exists, please delete the subject first or add other subject!!`

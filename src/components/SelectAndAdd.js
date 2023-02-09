@@ -27,7 +27,7 @@ function SelectAndAdd({
             <Table striped bordered hover className="HeaderRow">
               <thead>
                 <tr>
-                  <th>
+                  <th style={{ width: "10%" }}>
                     <Form.Select
                       aria-label="Year Select"
                       value={year}
@@ -40,7 +40,7 @@ function SelectAndAdd({
                       ))}
                     </Form.Select>
                   </th>
-                  <th>
+                  <th style={{ width: "10%" }}>
                     <Form.Select
                       aria-label="sem Select"
                       value={sem}
@@ -53,7 +53,7 @@ function SelectAndAdd({
                       ))}
                     </Form.Select>
                   </th>
-                  <th>
+                  <th style={{ width: "34%" }}>
                     <div>
                       <Form.Select
                         aria-label="Default select example"
@@ -79,7 +79,7 @@ function SelectAndAdd({
                       </Form.Select>
                     </div>
                   </th>
-                  <th>
+                  <th style={{ width: "38%" }}>
                     <div>
                       <Form.Select
                         aria-label="Default select example"
@@ -102,7 +102,7 @@ function SelectAndAdd({
                       </Form.Select>
                     </div>
                   </th>
-                  <th>
+                  <th style={{ width: "10%" }}>
                     <Form.Select
                       aria-label="Grade Select"
                       value={grade}

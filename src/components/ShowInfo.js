@@ -13,15 +13,23 @@ function ShowInfo({ clearData, badge, totalCredit }) {
         >
           Clear Data
         </Button>{" "}
-        <Button variant="secondary" className="float-right" size="lg">
+        <Button variant="secondary" className="float-right">
           Accumulated GPA{" "}
-          <Badge id="gpa-badge" bg="dark">
+          <Badge
+            id="gpa-badge"
+            bg="dark"
+            style={{ paddingTop: "0.5em", paddingBottom: "0.5em" }}
+          >
             {badge}
           </Badge>
         </Button>
-        <Button variant="secondary" className="float-right" size="lg">
+        <Button variant="secondary" className="float-right">
           Total Credits{" "}
-          <Badge id="credit-badge" bg="dark">
+          <Badge
+            id="credit-badge"
+            bg="dark"
+            style={{ paddingTop: "0.5em", paddingBottom: "0.5em" }}
+          >
             {totalCredit}
           </Badge>
         </Button>
